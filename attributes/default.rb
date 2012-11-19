@@ -6,6 +6,7 @@ default[:setup][:current_role] = "cassandra"
 
 default[:cassandra][:version] = "1.1.6"
 default[:cassandra][:checksum] = "c21d568313fe7832d9a1b6be0ff39aa5febfee530a1941e89da65f49c6556171"
+default[:cassandra][:jna_version] = "3.5.1"
 
 # A unique name is preferred to stop the risk of different clusters joining each other
 default[:cassandra][:cluster_name] = "DDM Cluster"
