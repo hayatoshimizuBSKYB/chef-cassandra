@@ -71,9 +71,9 @@ template "#{node[:cassandra][:install_path]}/cassandra/conf/cassandra-topology.p
   mode "0644"
   source "cassandra-topology.properties.erb"
   # Pass the topology array as 't' to the template.
-  variables(
-    :t => t
-  )
+#  variables(
+#    :t => t
+#  )
 #   notifies :restart , resources(:service => "cassandra")
 end
       
