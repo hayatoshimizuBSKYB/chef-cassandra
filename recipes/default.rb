@@ -39,7 +39,7 @@ bash "Unpack Cassandra" do
 end
 
 # Download jna.jar
-remote_file "#{ node[:cassandra][:install_path] }/cassandra/lib" do
+remote_file "#{ node[:cassandra][:install_path] }/cassandra/lib/jna.jar" do
   source "http://repo1.maven.org/maven2/net/java/dev/jna/jna/#{ node[:cassandra][:jna_version] }/jna-#{ node[:cassandra][:jna_version] }.jar"
   mode "0644"
 end
