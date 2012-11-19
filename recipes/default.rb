@@ -1,63 +1,98 @@
-#
 # Cookbook Name:: cassandra
-# Recipe:: default
-#
-# Copyright 2011, DataStax
-#
-# Apache License
-#
 
-###################################################
-# 
-# Public Variable Declarations
-# 
-###################################################
+include_recipe "cassandra::create_seed_list"
+include_recipe "cassandra::token_generation"
 
-# Stop Cassandra if it is running.
-# Different for Debian due to service package.
-#if node[:platform] == "debian"
-#  service "cassandra" do
-#    action :stop
-#    ignore_failure true
-#  end
-#else
-#  service "cassandra" do
-#    action :stop
-#  end
-#end
 
-# Only for debug purposes
-OPTIONAL_INSTALL = false 
+execute 'bash -c "ulimit -n 32768"'
+execute 'echo "* soft nofile 32768" | sudo tee -a /etc/security/limits.conf'
+execute 'echo "* hard nofile 32768" | sudo tee -a /etc/security/limits.conf'
+execute 'sync'
+execute 'echo 3 > /proc/sys/vm/drop_caches'
 
-include_recipe "cassandra::setup_repos"
 
-# using java recipe for the node and comment this 
-#include_recipe "cassandra::required_packages"
-#
-# instead user java recipe.
+# Download Cassandra from Apache
 
-#node["java"]["install_flavor"] = "oracle"
-node["java"]["install_flavor"] = "openjdk"
-include_recipe "java" 
-
-if OPTIONAL_INSTALL
-  include_recipe "cassandra::optional_packages"
+remote_file "/tmp/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz" do
+  source "http://www.mirrorservice.org/sites/ftp.apache.org/cassandra/#{ node[:cassandra][:version] }/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz"
+  mode "0644"
+  checksum node[:cassandra][:checksum]
 end
 
-include_recipe "cassandra::additional_settings"
-include_recipe "cassandra::install"
+# Create Cassandra User
+user "#{ node[:cassandra][:user] }" do
+  comment "Cassandra User"
+  home "/home/#{ node[:cassandra][:user] }"
+  shell "/bin/bash"
+end
+
+# Install Cassandra
+bash "Unpack Cassandra" do
+  code <<-EOH
+    if [ ! -d #{ node[:cassandra][:install_path] }/apache-cassandra-#{ node[:cassandra][:version] } ]
+    then
+      cd #{ node[:cassandra][:install_path] }
+      tar xzf /tmp/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz
+      ln -s #{ node[:cassandra][:install_path] }/apache-cassandra-#{ node[:cassandra][:version] } cassandra
+    fi
+  EOH
+end
+
+# Download jna.jar
+remote_file "#{ node[:cassandra][:install_path] }/cassandra/lib" do
+  source "http://repo1.maven.org/maven2/net/java/dev/jna/jna/#{ node[:cassandra][:jna_version] }/jna-#{ node[:cassandra][:jna_version] }.jar"
+  mode "0644"
+end
 
 
-# include_recipe "cassandra::raid"
-#include_recipe "cassandra::token_generation"
-#include_recipe "cassandra::create_seed_list"
-#include_recipe "cassandra::write_configs"
-#include_recipe "cassandra::restart_service"
-#
-#start service if not running
+# Configure cassandra.yaml
+#   Copy cassandra.yaml template
+template "#{node[:cassandra][:install_path]}/cassandra/conf/cassandra.yaml" do
+  source "cassandra.yaml.erb"
+  owner node[:cassandra][:user]
+  group node[:cassandra][:group]
+  mode "0644"
+  notifies :restart , resources(:service => "cassandra")
+end
 
-#service "cassandra" do
-#    action :enable
-#    supports :status => true, :restart => true, :reload => true
-#    #action :start
-#end
+# Generate cassandra-topology.properties
+template "#{node[:cassandra][:install_path]}/cassandra/conf/cassandra-topology.properties" do
+  owner node[:cassandra][:user]
+  group node[:cassandra][:group]
+  mode "0644"
+  source "cassandra-topology.properties.erb"
+  # Pass the topology array as 't' to the template.
+  variables(
+    :t => t
+  )
+   notifies :restart , resources(:service => "cassandra")
+end
+      
+#   Copy cassandra-env.sh template
+template "#{node[:cassandra][:install_path]}/cassandra/conf/cassandra-env.sh" do
+  source "cassandra.yaml.erb"
+  owner node[:cassandra][:user]
+  group node[:cassandra][:group]
+  mode "0755"
+  notifies :restart , resources(:service => "cassandra")
+end
+
+# Install startup script from template
+template "/etc/init.d/cassandra" do
+  source "cassandra.erb"
+  owner "root"
+  group "root"
+  mode "0755"
+  notifies :restart , resources(:service => "cassandra")
+end
+
+
+# Deifne cassandra as a service.
+service "cassandra" do
+  supports :status => true, :start => true, :stop => true, :restart => true, :reload => true
+end
+
+
+
+# Start Cassandra
+
