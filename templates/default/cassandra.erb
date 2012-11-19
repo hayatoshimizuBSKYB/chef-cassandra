@@ -1,0 +1,52 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          cassandra
+# Required-Start:    $remote_fs $network $named $time
+# Required-Stop:     $remote_fs $network $named $time
+# Should-Start:      ntp mdadm
+# Should-Stop:       ntp mdadm
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: distributed storage system for structured data
+# Description:       Cassandra is a distributed (peer-to-peer) system for
+#                    the management and storage of structured data.
+### END INIT INFO
+
+
+
+export JAVA_HOME=<%= node[:java][:home] %>
+export PATH=$JAVA_HOME/bin:$PATH
+export CASSANDRA_HOME=<%= node[:cassandra][:home] %>
+export CASSANDRA_BIN_DIR=${CASSANDRA_HOME}/bin
+export CASSANDRA_INCLUDE=${CASSANDRA_BIN_DIR}/cassandra.in.sh
+
+startCassandra() {
+	su - cassandra -c $CASSANDRA_BIN_DIR/cassandra
+}
+
+shutdownCassandra() {
+	if [[ `pgrep -u cassandra -f cassandra` =~ ^[0-9]+$ ]]
+	then
+		$CASSANDRA_BIN_DIR/nodetool -h localhost flush
+	fi
+	
+	pgrep -u cassandra -f cassandra | xargs -i{} kill -9 {}
+}
+
+# See how we were called.
+case "$1" in
+    start)
+		startCassandra
+        ;;
+    stop)
+		shutdownCassandra
+        ;;
+    restart)
+        $0 stop
+        sleep 5
+        $0 start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+esac
