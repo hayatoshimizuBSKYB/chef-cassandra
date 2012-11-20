@@ -24,7 +24,6 @@ default[:internal][:prime] = true
 
 default[:cassandra][:cluster_name] = "Test Cluster" 
 default[:cassandra][:initial_token] = 0 
-default[:cassandra][:seeds] = "127.0.0.1" 
 default[:cassandra][:auto_bootstrap] = true 
 default[:cassandra][:hinted_handoff_enabled] = true 
 default[:cassandra][:max_hint_window_in_ms] = 3600000
