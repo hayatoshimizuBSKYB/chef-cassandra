@@ -13,7 +13,7 @@ execute 'echo 3 > /proc/sys/vm/drop_caches'
 
 # Download Cassandra from Apache
 
-remote_file "/tmp/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz" do
+remote_file "#{ node[:cassandra][:download_path]}/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz" do
   source "http://www.mirrorservice.org/sites/ftp.apache.org/cassandra/#{ node[:cassandra][:version] }/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz"
   mode "0644"
   checksum node[:cassandra][:checksum]

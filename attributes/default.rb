@@ -8,9 +8,7 @@ default[:cassandra][:version] = "1.1.6"
 default[:cassandra][:checksum] = "c21d568313fe7832d9a1b6be0ff39aa5febfee530a1941e89da65f49c6556171"
 default[:cassandra][:jna_version] = "3.5.1"
 
-
-# It is best to have the commit log and the data
-# directory on two seperate drives
+default[:cassandra][:user] = "cassandra"
 
 
 # Advanced Cassandra settings
@@ -19,6 +17,7 @@ default[:cassandra][:initial_token] = false
 default[:cassandra][:seed] = false
 default[:cassandra][:rpc_address] = false
 default[:cassandra][:confPath] = "/etc/cassandra/"
+default[:cassandra][:download_path] = "/var/tmp"
 
 default[:internal][:prime] = true
 
