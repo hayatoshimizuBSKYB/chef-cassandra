@@ -50,7 +50,6 @@ template "/etc/init.d/cassandra" do
   owner "root"
   group "root"
   mode "0755"
-  notifies :restart , resources(:service => "cassandra")
 end
       
 # Deifne cassandra as a service.
