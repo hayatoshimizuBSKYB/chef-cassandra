@@ -43,7 +43,7 @@ ruby_block "ReadTokens" do
 
     Chef::Log.info "Setting token for this node."
     private_ip = node[:cloud][:private_ips].first
-    token_position = node[:cassandra][:nodes][private_ip.to_str]
-    node[:cassandra][:initial_token] = results[node[:cassandra][token_position.to_str]]
+    token_position = node[:cassandra][:nodes][private_ip]
+    node[:cassandra][:initial_token] = results[node[:cassandra][token_position]]
   end
 end
