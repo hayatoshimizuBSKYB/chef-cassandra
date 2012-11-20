@@ -27,6 +27,7 @@ if node[:cassandra][:initial_token] == false
       node[:cassandra][:data_centres].each do |dc|
         node[:cassandra][:cluster_size_list] = cluster_size_list + " " + dc[:cluster_size]
       end
+      Chef::Log.info "Cassandra cluster sizes: #{node[:cassandra][:cluster_size_list]}"
     end
   end
 
