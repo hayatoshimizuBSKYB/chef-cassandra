@@ -23,7 +23,7 @@ end
 # Run tokentool accordingly
 ruby_block "Run Tokentool" do
   block do
-    node[:cassandra][:data_centres].size
+    no_dcs = node[:cassandra][:data_centres].size
     Chef::Log.info "Number of data centres: #{no_dcs}"
     
     cluster_size_list = ""
