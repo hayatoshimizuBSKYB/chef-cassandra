@@ -45,14 +45,18 @@ remote_file "#{ node[:cassandra][:install_path] }/cassandra/lib/jna.jar" do
 end
 
 # Install startup script from template
-#template "/etc/init.d/cassandra" do
-#  source "cassandra.erb"
-#  owner "root"
-#  group "root"
-#  mode "0755"
-#  notifies :restart , resources(:service => "cassandra")
-#end
-
+template "/etc/init.d/cassandra" do
+  source "cassandra.erb"
+  owner "root"
+  group "root"
+  mode "0755"
+  notifies :restart , resources(:service => "cassandra")
+end
+      
+# Deifne cassandra as a service.
+service "cassandra" do
+  supports :status => true, :start => true, :stop => true, :restart => true, :reload => true
+end
 
 # Configure cassandra.yaml
 #   Copy cassandra.yaml template
@@ -70,10 +74,7 @@ template "#{node[:cassandra][:install_path]}/cassandra/conf/cassandra-topology.p
   group node[:cassandra][:group]
   mode "0644"
   source "cassandra-topology.properties.erb"
-  # Pass the topology array as 't' to the template.
-#  variables(
-#    :t => t
-#  )
+
 #   notifies :restart , resources(:service => "cassandra")
 end
       
@@ -89,10 +90,7 @@ end
 
 
 
-# Deifne cassandra as a service.
-#service "cassandra" do
-#  supports :status => true, :start => true, :stop => true, :restart => true, :reload => true
-#end
+
 
 
 
