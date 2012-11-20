@@ -228,7 +228,7 @@ def printResults():
     for dc in originalTokens.keys():
         print "DC%d:" % (dc + 1)
         for i, token in enumerate(originalTokens[dc].values()):
-            print "Node %d: %d" % (i, token)
+            print "DC%d: Node %d: %d" % (dc + 1, i, token)
         print
 
 def run():
