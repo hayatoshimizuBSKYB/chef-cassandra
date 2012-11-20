@@ -32,7 +32,7 @@ bash "Unpack Cassandra" do
     if [ ! -d #{ node[:cassandra][:install_path] }/apache-cassandra-#{ node[:cassandra][:version] } ]
     then
       cd #{ node[:cassandra][:install_path] }
-      tar xzf /tmp/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz
+      tar xzf #{ node[:cassandra][:download_path]}/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz
       ln -s #{ node[:cassandra][:install_path] }/apache-cassandra-#{ node[:cassandra][:version] } cassandra
     fi
   EOH
