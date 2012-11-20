@@ -24,7 +24,7 @@ end
 ruby_block "Run Tokentool" do
   block do
     node[:cassandra][:data_centres].each do |dc|
-      node[:cassandra][:cluster_size_list] = cluster_size_list + " " + dc[:cluster_size]
+      node[:cassandra][:cluster_size_list] = node[:cassandra][:cluster_size_list] + " " + dc[:cluster_size]
     end
     Chef::Log.info "Cassandra cluster sizes: #{node[:cassandra][:cluster_size_list]}"
   end
