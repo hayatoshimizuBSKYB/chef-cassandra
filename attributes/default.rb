@@ -13,7 +13,6 @@ default[:cassandra][:user] = "cassandra"
 
 # Advanced Cassandra settings
 default[:cassandra][:token_position] = false
-default[:cassandra][:initial_token] = false
 default[:cassandra][:seed] = false
 default[:cassandra][:rpc_address] = false
 default[:cassandra][:confPath] = "/etc/cassandra/"
@@ -22,7 +21,6 @@ default[:cassandra][:download_path] = "/var/tmp"
 default[:internal][:prime] = true
 
 default[:cassandra][:cluster_name] = "Test Cluster" 
-default[:cassandra][:initial_token] = 0 
 default[:cassandra][:auto_bootstrap] = true 
 default[:cassandra][:hinted_handoff_enabled] = true 
 default[:cassandra][:max_hint_window_in_ms] = 3600000
