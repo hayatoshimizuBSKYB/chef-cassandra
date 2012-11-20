@@ -23,20 +23,18 @@ end
 # Run tokentool accordingly
 ruby_block "Run Tokentool" do
   block do
-    no_dcs = node[:cassandra][:data_centres].length
+    node[:cassandra][:data_centres].size
     Chef::Log.info "Number of data centres: #{no_dcs}"
     
-    node[:cassandra][:cluster_size_list] = ""
-    node[:cassandra][:data_centres].each do |dc|
-      node[:cassandra][:cluster_size_list] = node[:cassandra][:cluster_size_list] + " " + dc[:cluster_size]
+    cluster_size_list = ""
+    node[:cassandra][:data_centres].each do |dc, cluster_size|
+      cluster_size_list = cluster_size_list + " " + cluster_size
     end
-    Chef::Log.info "Cassandra cluster sizes: #{node[:cassandra][:cluster_size_list]}"
+    Chef::Log.info "Cassandra cluster sizes: cluster_size_list"
+    `/tmp/tokentool.py #{ cluster_size_list } > /tmp/tokens`
   end
 end
 
-execute "/tmp/tokentool.py #{ node[:cassandra][:cluster_size_list] } > /tmp/tokens" do
-  creates "/tmp/tokens"
-end
 
 ruby_block "ReadTokens" do
   block do
