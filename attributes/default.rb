@@ -10,9 +10,9 @@ default[:cassandra][:jna_version] = "3.5.1"
 
 default[:cassandra][:user] = "cassandra"
 
-
+Chef::Log.info "data centres: "
 default[:cassandra][:cluster_size_list] = ""
-node[:cassandra][:data_centres].each do |dc|
+default[:cassandra][:data_centres].each do |dc|
   default[:cassandra][:cluster_size_list] = default[:cassandra][:cluster_size_list] + " " + dc[:cluster_size]
 end
   
