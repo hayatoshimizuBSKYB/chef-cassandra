@@ -11,6 +11,12 @@ default[:cassandra][:jna_version] = "3.5.1"
 default[:cassandra][:user] = "cassandra"
 
 
+
+node[:cassandra][:data_centres].each do |dc|
+  default[:cassandra][:cluster_size_list] = default[:cassandra][:cluster_size_list] + " " + dc[:cluster_size]
+end
+  
+
 # Advanced Cassandra settings
 default[:cassandra][:token_position] = false
 default[:cassandra][:initial_token] = false

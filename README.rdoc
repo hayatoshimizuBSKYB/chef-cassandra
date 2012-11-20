@@ -2,9 +2,7 @@
 
 This script launches a Apache Cassandra cluster of a predetermined size.
 
-This has been tested in Ubuntu 10.10 and CentOS 5.5, but should support your version of Ubuntu, CentOS, and RedHat.
-
-This script will be developed and housed at: https://github.com/riptano/chef.
+This has been tested in Ubuntu 12
 
 = REQUIREMENTS:
 

@@ -17,7 +17,7 @@
 if not node[:cassandra][:seed]
 
   # Find the position of the current node in the ring
-  cluster_nodes = search(:node, "roles:#{node[:setup][:current_role]}")
+  cluster_nodes = search(:node, "chef_environment:#{node[:cassandra][:environment]}")
   if node[:cassandra][:token_position] == false
     node[:cassandra][:token_position] = cluster_nodes.count
   end
