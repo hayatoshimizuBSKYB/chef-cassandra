@@ -19,6 +19,13 @@ remote_file "#{ node[:cassandra][:download_path]}/apache-cassandra-#{ node[:cass
   checksum node[:cassandra][:checksum]
 end
 
+directory "#{ node[:cassandra][:data_path]}" do
+  owner "#{ node[:cassandra][:user] }"
+  group "#{ node[:cassandra][:group] }"
+  mode "0755"
+  action :create
+end
+
 # Create Cassandra User
 user "#{ node[:cassandra][:user] }" do
   comment "Cassandra User"
