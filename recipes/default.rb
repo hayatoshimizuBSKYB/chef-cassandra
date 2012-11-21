@@ -79,7 +79,7 @@ end
       
 #   Copy cassandra-env.sh template
 template "#{node[:cassandra][:install_path]}/cassandra/conf/cassandra-env.sh" do
-  source "cassandra.yaml.erb"
+  source "cassandra-env.sh.erb"
   owner node[:cassandra][:user]
   group node[:cassandra][:group]
   mode "0755"
