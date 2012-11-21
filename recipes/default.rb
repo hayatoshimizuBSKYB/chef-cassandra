@@ -19,12 +19,30 @@ remote_file "#{ node[:cassandra][:download_path]}/apache-cassandra-#{ node[:cass
   checksum node[:cassandra][:checksum]
 end
 
-directory "#{ node[:cassandra][:data_path]}" do
+directory "#{ node[:cassandra][:data_file_directories]}" do
   owner "#{ node[:cassandra][:user] }"
   group "#{ node[:cassandra][:group] }"
   mode "0755"
   action :create
+  recursive true
 end
+
+directory "#{ node[:cassandra][:commitlog_directory]}" do
+  owner "#{ node[:cassandra][:user] }"
+  group "#{ node[:cassandra][:group] }"
+  mode "0755"
+  action :create
+  recursive true
+end
+
+directory "#{ node[:cassandra][:saved_caches_directory]}" do
+  owner "#{ node[:cassandra][:user] }"
+  group "#{ node[:cassandra][:group] }"
+  mode "0755"
+  action :create
+  recursive true
+end
+
 
 # Create Cassandra User
 user "#{ node[:cassandra][:user] }" do
