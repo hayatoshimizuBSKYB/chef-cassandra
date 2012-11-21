@@ -148,9 +148,8 @@ template "#{node[:cassandra][:install_path]}/cassandra/conf/log4j-server.propert
 end
 
 
-
-
-
-
 # Start Cassandra
-
+service "cassandra" do
+  supports :status => true, :restart => true, :reload => true
+  action [ :enable, :start ]
+end
