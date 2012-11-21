@@ -22,8 +22,18 @@ end
 # Create Cassandra User
 user "#{ node[:cassandra][:user] }" do
   comment "Cassandra User"
+  uid 1000
+  gid 1000
   home "/home/#{ node[:cassandra][:user] }"
   shell "/bin/bash"
+end
+
+
+directory "/home/#{ node[:cassandra][:user] }" do
+  owner "#{ node[:cassandra][:user] }"
+  group "#{ node[:cassandra][:group] }"
+  mode "0755"
+  action :create
 end
 
 # Install Cassandra
