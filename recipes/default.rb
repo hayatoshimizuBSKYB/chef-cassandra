@@ -43,6 +43,13 @@ directory "#{ node[:cassandra][:saved_caches_directory]}" do
   recursive true
 end
 
+directory "#{ node[:cassandra][:log_path]}" do
+  owner "#{ node[:cassandra][:user] }"
+  group "#{ node[:cassandra][:group] }"
+  mode "0755"
+  action :create
+  recursive true
+end
 
 # Create Cassandra User
 user "#{ node[:cassandra][:user] }" do
