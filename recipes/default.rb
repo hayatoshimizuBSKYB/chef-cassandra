@@ -13,6 +13,16 @@ execute 'sync'
 execute 'echo 3 > /proc/sys/vm/drop_caches'
 
 
+bash "Add hosts entry" do
+  code <<-EOH
+    if [ `grep #{ node[:cassandra][:ip_address] } /etc/hosts | wc -l` = 0 ]
+    then
+      chattr -i /etc/hosts
+      echo #{ node[:cassandra][:ip_address] } `hostname` >> /etc/hosts
+    fi
+  EOH
+end
+
 # Download Cassandra from Apache
 
 remote_file "#{ node[:cassandra][:download_path]}/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz" do
