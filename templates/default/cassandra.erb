@@ -21,7 +21,7 @@ export CASSANDRA_BIN_DIR=${CASSANDRA_HOME}/bin
 export CASSANDRA_INCLUDE=${CASSANDRA_BIN_DIR}/cassandra.in.sh
 
 startCassandra() {
-	su - cassandra -c $CASSANDRA_BIN_DIR/cassandra
+	su cassandra -c $CASSANDRA_BIN_DIR/cassandra
 }
 
 shutdownCassandra() {
