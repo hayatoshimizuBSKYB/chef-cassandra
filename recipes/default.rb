@@ -23,6 +23,13 @@ bash "Add hosts entry" do
   EOH
 end
 
+# Create Cassandra User
+user "#{ node[:cassandra][:user] }" do
+  comment "Cassandra User"
+  home "/home/#{ node[:cassandra][:user] }"
+  shell "/bin/bash"
+end
+
 # Download Cassandra from Apache
 
 remote_file "#{ node[:cassandra][:download_path]}/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz" do
@@ -61,13 +68,6 @@ directory "#{ node[:cassandra][:log_path]}" do
   mode "0755"
   action :create
   recursive true
-end
-
-# Create Cassandra User
-user "#{ node[:cassandra][:user] }" do
-  comment "Cassandra User"
-  home "/home/#{ node[:cassandra][:user] }"
-  shell "/bin/bash"
 end
 
 
