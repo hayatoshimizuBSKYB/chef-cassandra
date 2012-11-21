@@ -15,7 +15,6 @@ default[:cassandra][:user] = "cassandra"
 # Advanced Cassandra settings
 default[:cassandra][:token_position] = false
 default[:cassandra][:initial_token] = false
-default[:cassandra][:seed] = false
 default[:cassandra][:rpc_address] = false
 default[:cassandra][:confPath] = "/etc/cassandra/"
 default[:cassandra][:download_path] = "/var/tmp"
