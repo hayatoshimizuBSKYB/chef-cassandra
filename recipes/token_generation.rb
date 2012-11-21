@@ -40,18 +40,25 @@ ruby_block "ReadTokens" do
   block do
     
     private_ip = node[:cloud][:private_ips].first
+    Chef::Log.info "private ip: #{private_ip}"
+
     token_position = node[:cassandra][:nodes][private_ip].split(':')
+    Chef::Log.info "Token position: #{token_position}"
     dc = token_position[0]
     position = token_position[1]
     
     
     results = []
     open("/tmp/tokens").each do |line|
-      results << line.chomp.split(':')[2].strip if line.match(".*#{dc}:\sNodes")
+      Chef::Log.info "Line: #{line}"
+      if line.match(".*#{dc}:\s*Node")
+        Chef::Log.info "Line matched: #{line}"
+        results << line.chomp.split(':')[2].strip 
+      end 
     end
 
     Chef::Log.info "Setting token for this node."
     
-    node[:cassandra][:initial_token] = results[node[:cassandra][position]]
+    node[:cassandra][:initial_token] = results[position.to_i]
   end
 end
