@@ -22,8 +22,6 @@ end
 # Create Cassandra User
 user "#{ node[:cassandra][:user] }" do
   comment "Cassandra User"
-  uid 1000
-  gid 1000
   home "/home/#{ node[:cassandra][:user] }"
   shell "/bin/bash"
 end
