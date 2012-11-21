@@ -39,7 +39,7 @@ commitlog_segment_size_in_mb: <%= @node[:cassandra][:commitlog_segment_size_in_m
 seed_provider:
     - class_name: <%= @node[:cassandra][:seed_provider_class_name] %>
       parameters:
-          - seeds: "<%= node[:cassandra][:seeds] %>"
+          - seeds: "<%= node[:cassandra][:seed] %>"
 
 flush_largest_memtables_at: <%= @node[:cassandra][:flush_largest_memtables_at] %>
 

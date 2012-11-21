@@ -36,9 +36,8 @@ ruby_block "Run Tokentool" do
 end
 
 
-ruby_block "ReadTokens" do
+ruby_block "Set token for this node" do
   block do
-    
     private_ip = node[:cloud][:private_ips].first
     Chef::Log.info "private ip: #{private_ip}"
 
@@ -47,12 +46,9 @@ ruby_block "ReadTokens" do
     dc = token_position[0]
     position = token_position[1]
     
-    
     results = []
     open("/tmp/tokens").each do |line|
-      Chef::Log.info "Line: #{line}"
       if line.match(".*#{dc}:\s*Node")
-        Chef::Log.info "Line matched: #{line}"
         results << line.chomp.split(':')[2].strip 
       end 
     end
