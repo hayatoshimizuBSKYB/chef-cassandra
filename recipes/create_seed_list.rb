@@ -34,16 +34,15 @@ if not node[:cassandra][:seed]
 
   # Pull the seeds from the chef db
   if cluster_nodes.count == 0
-
     # Add this node as a seed since this is the first node
     Chef::Log.info "[SEEDS] First node chooses itself."
     seeds << node[:cloud][:private_ips].first
   else
-    
     # Add the first node as a seed
-    Chef::Log.info "[SEEDS] Add the first node."
-    seeds << cluster_nodes_array[0][1]
-
+    Chef::Log.info "[SEEDS] Add all the nodes."
+    cluster_nodes_array.each do |seed_node|
+      seeds << seed_node[1]
+    end
   end
 else
 
@@ -53,9 +52,5 @@ end
 
 Chef::Log.info "[SEEDS] Chosen seed(s): " << seeds.inspect
 
-# TODO: Add support for multiple 07x nodes
-if node[:setup][:deployment] == "07x"
-  node[:cassandra][:seed] = seeds[0]
-else
-  node[:cassandra][:seed] = seeds.join(",")
-end
+node[:cassandra][:seed] = seeds.join(",")
+
