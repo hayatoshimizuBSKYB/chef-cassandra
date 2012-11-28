@@ -41,10 +41,12 @@ ruby_block "Set token for this node" do
     private_ip = node[:cloud][:private_ips].first
     Chef::Log.info "private ip: #{private_ip}"
 
-    token_position = node[:cassandra][:nodes][private_ip].split(':')
-    Chef::Log.info "Token position: #{token_position}"
-    dc = token_position[0]
-    position = token_position[1]
+    dc = ""
+    node_no = 0
+    node[:cassandra][:nodes].each_pair do |position, ip_address|
+      dc = position.split(":")[0]
+      node_no = position.split(":")[1].to_i
+    end
     
     results = []
     open("/tmp/tokens").each do |line|
@@ -55,6 +57,6 @@ ruby_block "Set token for this node" do
 
     Chef::Log.info "Setting token for this node."
     
-    node[:cassandra][:initial_token] = results[position.to_i]
+    node[:cassandra][:initial_token] = results[node_no]
   end
 end
