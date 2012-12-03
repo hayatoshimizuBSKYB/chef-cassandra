@@ -1,5 +1,5 @@
 # Cookbook Name:: cassandra
-
+include_recipe "cassandra::cloud"
 include_recipe "cassandra::create_seed_list"
 include_recipe "cassandra::token_generation"
 
