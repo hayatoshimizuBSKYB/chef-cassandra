@@ -38,14 +38,12 @@ end
 
 ruby_block "Set token for this node" do
   block do
-    private_ip = node[:cloud][:private_ips].first
-    Chef::Log.info "private ip: #{private_ip}"
-
     dc = ""
     node_no = 0
     node[:cassandra][:nodes].each_pair do |position, ip_address|
       dc = position.split(":")[0]
       node_no = position.split(":")[1].to_i
+      break if ip_address.eql? node[:cassandra][:ip_address]
     end
     
     results = []
