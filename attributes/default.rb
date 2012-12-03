@@ -45,7 +45,6 @@ default[:cassandra][:commitlog_sync_period_in_ms] = 10000
 default[:cassandra][:commitlog_segment_size_in_mb] = 32
 default[:cassandra][:trickle_fsync] = "false"
 default[:cassandra][:trickle_fsync_interval_in_kb] = 10240
-default[:cassandra][:listen_address] = node[:cloud][:private_ips].first
 default[:cassandra][:rpc_address] = "0.0.0.0"
 default[:cassandra][:flush_largest_memtables_at] = 0.75
 default[:cassandra][:reduce_cache_sizes_at] = 0.85
