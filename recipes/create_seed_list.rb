@@ -16,8 +16,6 @@
 # Calculate the seed list if not currently set
 if not node[:cassandra][:seed]
 
-  node[:cassandra][:ip_address] = node[:cloud][:private_ips].first
-  node[:cassandra][:listen_address] = node[:cloud][:private_ips].first
   # Find the position of the current node in the ring
   cluster_nodes = search(:node, "chef_environment:#{node[:cassandra][:environment]}")
   if node[:cassandra][:token_position] == false
