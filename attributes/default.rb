@@ -10,7 +10,6 @@ default[:cassandra][:jna_version] = "3.5.1"
 
 default[:cassandra][:user] = "cassandra"
 
-default[:cassandra][:ip_address] = node[:cloud][:private_ips].first
 
 # Advanced Cassandra settings
 default[:cassandra][:token_position] = false
