@@ -119,15 +119,6 @@ template "#{node[:cassandra][:install_path]}/cassandra/conf/cassandra.yaml" do
 #  notifies :restart , resources(:service => "cassandra")
 end
 
-# Generate cassandra-topology.properties
-template "#{node[:cassandra][:install_path]}/cassandra/conf/cassandra-topology.properties" do
-  owner node[:cassandra][:user]
-  group node[:cassandra][:group]
-  mode "0644"
-  source "cassandra-topology.properties.erb"
-
-#   notifies :restart , resources(:service => "cassandra")
-end
       
 # Copy cassandra-env.sh template
 template "#{node[:cassandra][:install_path]}/cassandra/conf/cassandra-env.sh" do
