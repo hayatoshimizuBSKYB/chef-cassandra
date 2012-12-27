@@ -21,6 +21,7 @@ if not node[:cassandra][:seed]
   if node[:cassandra][:token_position] == false
     node[:cassandra][:token_position] = cluster_nodes.count
   end
+  Chef::Log.info "Currently seen nodes: #{cluster_nodes.inspect}"
 
   # Find all cluster node IP addresses
   cluster_nodes_array = []
