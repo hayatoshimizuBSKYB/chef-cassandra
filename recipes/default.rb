@@ -33,7 +33,7 @@ end
 # Download Cassandra from Apache
 
 remote_file "#{ node[:cassandra][:download_path]}/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz" do
-  source "http://www.mirrorservice.org/sites/ftp.apache.org/cassandra/#{ node[:cassandra][:version] }/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz"
+  source "#{ node[:cassandra][:download_url_base] }/#{ node[:cassandra][:version] }/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz"
   mode "0644"
   checksum node[:cassandra][:checksum]
 end
