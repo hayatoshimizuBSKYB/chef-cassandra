@@ -138,6 +138,13 @@ template "#{node[:cassandra][:install_path]}/cassandra/conf/log4j-server.propert
 #  notifies :restart , resources(:service => "cassandra")
 end
 
+template "#{node[:cassandra][:install_path]}/cassandra/bin/snapshot.sh" do
+   owner "cassandra"
+   group "cassandra"
+   mode "0755"
+   source "snapshot.sh.erb"
+   notifies :restart , resources(:service => "cassandra")
+end
 
 # Start Cassandra
 service "cassandra" do
