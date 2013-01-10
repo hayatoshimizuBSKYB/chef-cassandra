@@ -1,0 +1,24 @@
+#!/bin/bash
+
+CASSANDRA_BIN_DIR=<%= @node[:cassandra][:home] %>/bin
+
+todays_backup_dir=<%= @node[:s3ql][:mount_point] %>/cassandra/`date +"%Y-%m-%d"`
+
+mkdir -p $todays_backup_dir
+
+for ks in `echo 'show keyspaces;' | ./cassandra-cli | egrep "^Keyspace:" | sed -e 's/Keyspace: //g' -e 's/://g'`
+do
+	mkdir $todays_backup_dir/$ks
+	
+	output=`$CASSANDRA_BIN_DIR/nodetool snapshot $ks`
+	ss_dirname=`echo $output | sed -e 's/.*Snapshot directory: //g' | perl -p -e 's/\n//g'`
+	
+	ks_data_dir=<%= @node[:cassandra][:data_file_directories] %>/$ks
+	for ss_dir in `find $ks_data_dir -name $ss_dirname`
+	do
+		sub_ks_data_name=`echo $ss_dir | sed -e "s|$ks_data_dir/||g" -e 's|/snapshots.*$||g'`
+		mv $ss_dir $todays_backup_dir/$ks/$sub_ks_data_name
+	done
+done
+
+
