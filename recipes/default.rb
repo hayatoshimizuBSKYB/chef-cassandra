@@ -38,7 +38,7 @@ end
 # Download Cassandra from Apache
 
 remote_file "#{ node[:cassandra][:download_path]}/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz" do
-  source "http://www.mirrorservice.org/sites/ftp.apache.org/cassandra/#{ node[:cassandra][:version] }/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz"
+  source "#{ node[:cassandra][:download_url_base] }/#{ node[:cassandra][:version] }/apache-cassandra-#{ node[:cassandra][:version] }-bin.tar.gz"
   mode "0644"
   checksum node[:cassandra][:checksum]
 end
@@ -144,6 +144,13 @@ template "#{node[:cassandra][:install_path]}/cassandra/conf/log4j-server.propert
 #  notifies :restart , resources(:service => "cassandra")
 end
 
+template "#{node[:cassandra][:install_path]}/cassandra/bin/snapshot.sh" do
+   owner "cassandra"
+   group "cassandra"
+   mode "0755"
+   source "snapshot.sh.erb"
+   notifies :restart , resources(:service => "cassandra")
+end
 
 # Start Cassandra
 service "cassandra" do
