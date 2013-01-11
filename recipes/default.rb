@@ -4,14 +4,19 @@ include_recipe "cassandra::create_seed_list"
 include_recipe "cassandra::token_generation"
 
 
-execute 'bash -c "ulimit -n 32768"'
-execute 'echo "* soft nofile 32768" | sudo tee -a /etc/security/limits.conf'
-execute 'echo "* hard nofile 32768" | sudo tee -a /etc/security/limits.conf'
-execute 'echo "* soft memlock unlimited" | sudo tee -a /etc/security/limits.conf'
-execute 'echo "* hard memlock unlimited" | sudo tee -a /etc/security/limits.conf'
-execute 'sync'
-execute 'echo 3 > /proc/sys/vm/drop_caches'
-
+bash "Set ulimits" do
+  code <<-EOH
+    if [ `grep "nofile 32768" /etc/security/limits.conf | wc -l` -gt 0 ]
+    then
+      echo "* soft nofile 32768" | sudo tee -a /etc/security/limits.conf
+      echo "* hard nofile 32768" | sudo tee -a /etc/security/limits.conf
+      echo "* soft memlock unlimited" | sudo tee -a /etc/security/limits.conf
+      echo "* hard memlock unlimited" | sudo tee -a /etc/security/limits.conf
+      sync
+      echo 3 > /proc/sys/vm/drop_caches
+    fi
+  EOH
+end
 
 bash "Add hosts entry" do
   code <<-EOH
@@ -91,9 +96,10 @@ bash "Unpack Cassandra" do
 end
 
 # Download jna.jar
-remote_file "#{ node[:cassandra][:install_path] }/cassandra/lib/jna.jar" do
+remote_file "#{ node[:cassandra][:install_path] }/cassandra/lib/jna.jar }" do
   source "http://repo1.maven.org/maven2/net/java/dev/jna/jna/#{ node[:cassandra][:jna_version] }/jna-#{ node[:cassandra][:jna_version] }.jar"
   mode "0644"
+  not_if { File.exists?("#{node[:cassandra][:install_path] }/cassandra/lib/jna.jar}") }
 end
 
 # Install startup script from template

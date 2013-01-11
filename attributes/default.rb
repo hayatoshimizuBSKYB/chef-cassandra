@@ -4,8 +4,8 @@ default[:setup][:cluster_size] = 8
 default[:setup][:current_role] = "cassandra"
 
 
-default[:cassandra][:version] = "1.1.6"
-default[:cassandra][:checksum] = "c21d568313fe7832d9a1b6be0ff39aa5febfee530a1941e89da65f49c6556171"
+default[:cassandra][:version] = "1.2.0"
+default[:cassandra][:checksum] = "47bd459fd103a539ef148089f4c8050eeaa950b0b19a798f69905a942fc59510"
 default[:cassandra][:jna_version] = "3.5.1"
 
 default[:cassandra][:user] = "cassandra"
