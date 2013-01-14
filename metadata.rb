@@ -15,6 +15,7 @@ recipe           "cassandra::token_generation", "Generates the token positions f
 recipe           "cassandra::create_seed_list", "Generates the seed lists for the cluster."
 recipe           "cassandra::write_configs", "Writes the configurations for Cassandra."
 recipe           "cassandra::restart_service", "Restarts the Cassandra service."
+recipe           "cassandra::snapshots_restore", "Restore from snapshots."
 
 attribute "setup",
   :display_name => "Setup Configurations",
