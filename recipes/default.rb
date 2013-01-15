@@ -193,7 +193,7 @@ ruby_block "Restore from snapshots" do
         
       end
     else
-      Dir.entries(node[:cassandra][:data_file_directories]).each |entry| do
+      Dir.entries(node[:cassandra][:data_file_directories]).each do |entry| 
         puts "file: #{entry}"
       end
     end
