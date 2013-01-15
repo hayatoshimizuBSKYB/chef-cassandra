@@ -183,7 +183,7 @@ ruby_block "Restore from snapshots" do
               FileUtils.rm_rf "#{node[:cassandra][:data_file_directories]}/#{keyspace}/#{ks_component}"
               
               # Copy the snapshot directory
-              FileUtils.cp_r "#{cassandra_backup_dir}/#{latest_date_str}/#{keyspace}/#{ks_component}", "#{node[:cassandra][:data_file_directories]}/#{keyspace}"
+              FileUtils.cp_r "#{cassandra_backup_dir}/#{latest_date_str}/#{keyspace}/#{ks_component}", "#{node[:cassandra][:data_file_directories]}/#{keyspace}/#{ks_component}"
               puts "Recovered #{keyspace}:#{ks_component} from backup."
             end
             
