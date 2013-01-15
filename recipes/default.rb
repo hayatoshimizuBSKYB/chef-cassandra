@@ -157,8 +157,7 @@ ruby_block "Restore from snapshots" do
     require 'date'
 
     # Is data volume empty?
-    puts "Number of entries in dir: #{Dir.entries(node[:cassandra][:data_file_directories])}: #{Dir.entries(node[:cassandra][:data_file_directories]).size.to_s}"
-    if Dir.entries(node[:cassandra][:data_file_directories]).size > 2
+    if Dir.entries(node[:cassandra][:data_file_directories]).size == 2
       # Check if snapshots exists
       cassandra_backup_dir = "#{node[:cassandra][:backup_dir]}/cassandra"
       if Dir.exists?(cassandra_backup_dir)
@@ -191,10 +190,6 @@ ruby_block "Restore from snapshots" do
           end
         end
         
-      end
-    else
-      Dir.entries(node[:cassandra][:data_file_directories]).each do |entry| 
-        puts "file: #{entry}"
       end
     end
     
