@@ -165,7 +165,7 @@ ruby_block "Restore from snapshots" do
         latest_date_str = ""
         latest_date_obj = Date.parse("1970-01-01")
         Dir.foreach(cassandra_backup_dir) do |date|
-          next if (keyspace.eql?(".")) || (keyspace.eql?(".."))
+          next if (date.eql?(".")) || (date.eql?(".."))
           d = Date.parse(date)
           if d > latest_date_obj
             latest_date_str = date
