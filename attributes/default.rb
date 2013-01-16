@@ -70,12 +70,12 @@ default[:cassandra][:thrift_framed_transport_size_in_mb] = 15
 default[:cassandra][:thrift_max_message_length_in_mb] = 16
 default[:cassandra][:incremental_backups] = "false"
 default[:cassandra][:snapshot_before_compaction] = "false"
-default[:cassandra][:read_request_timeout_in_ms]: 10000
-default[:cassandra][:range_request_timeout_in_ms]: 10000
-default[:cassandra][:write_request_timeout_in_ms]: 10000
-default[:cassandra][:truncate_request_timeout_in_ms]: 60000
-default[:cassandra][:request_timeout_in_ms]: 10000
-default[:cassandra][:cross_node_timeout]: "false"
+default[:cassandra][:read_request_timeout_in_ms] = 10000
+default[:cassandra][:range_request_timeout_in_ms] = 10000
+default[:cassandra][:write_request_timeout_in_ms] = 10000
+default[:cassandra][:truncate_request_timeout_in_ms] = 60000
+default[:cassandra][:request_timeout_in_ms] = 10000
+default[:cassandra][:cross_node_timeout] = "false"
 default[:cassandra][:auto_snapshot] = "true"
 default[:cassandra][:column_index_size_in_kb] = 64
 default[:cassandra][:in_memory_compaction_limit_in_mb] = 64
