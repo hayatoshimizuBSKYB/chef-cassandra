@@ -10,6 +10,8 @@ for ks in `echo 'show keyspaces;' | ./cassandra-cli | egrep "^Keyspace:" | sed -
 do
 	mkdir $todays_backup_dir/$ks
 	
+	`$CASSANDRA_BIN_DIR/nodetool flush $ks`
+	`$CASSANDRA_BIN_DIR/nodetool compact $ks`
 	output=`$CASSANDRA_BIN_DIR/nodetool snapshot $ks`
 	ss_dirname=`echo $output | sed -e 's/.*Snapshot directory: //g' | perl -p -e 's/\n//g'`
 	
