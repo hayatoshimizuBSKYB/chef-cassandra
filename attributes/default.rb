@@ -21,9 +21,12 @@ default[:cassandra][:download_path] = "/var/tmp"
 default[:internal][:prime] = true
 
 default[:cassandra][:cluster_name] = "Test Cluster" 
+default[:cassandra][:num_tokens] = 256
 default[:cassandra][:auto_bootstrap] = true 
 default[:cassandra][:hinted_handoff_enabled] = true 
 default[:cassandra][:max_hint_window_in_ms] = 3600000
+default[:cassandra][:hinted_handoff_throttle_in_kb] = 1024
+default[:cassandra][:max_hints_delivery_threads] = 2
 default[:cassandra][:hinted_handoff_throttle_delay_in_ms] = 50
 default[:cassandra][:populate_io_cache_on_flush] = false
 default[:cassandra][:authenticator] = "org.apache.cassandra.auth.AllowAllAuthenticator"
@@ -32,6 +35,7 @@ default[:cassandra][:partitioner] = "org.apache.cassandra.dht.RandomPartitioner"
 default[:cassandra][:data_file_directories] =  "/var/lib/cassandra/data"
 default[:cassandra][:commitlog_directory] = "/var/lib/cassandra/commitlog"
 default[:cassandra][:saved_caches_directory] = "/var/lib/cassandra/saved_caches"
+default[:cassandra][:disk_failure_policy] = "stop"
 default[:cassandra][:key_cache_size_in_mb] = 1024
 default[:cassandra][:key_cache_save_period] = 14400
 default[:cassandra][:key_cache_keys_to_save] = 100
@@ -66,6 +70,12 @@ default[:cassandra][:thrift_framed_transport_size_in_mb] = 15
 default[:cassandra][:thrift_max_message_length_in_mb] = 16
 default[:cassandra][:incremental_backups] = "false"
 default[:cassandra][:snapshot_before_compaction] = "false"
+default[:cassandra][:read_request_timeout_in_ms]: 10000
+default[:cassandra][:range_request_timeout_in_ms]: 10000
+default[:cassandra][:write_request_timeout_in_ms]: 10000
+default[:cassandra][:truncate_request_timeout_in_ms]: 60000
+default[:cassandra][:request_timeout_in_ms]: 10000
+default[:cassandra][:cross_node_timeout]: "false"
 default[:cassandra][:auto_snapshot] = "true"
 default[:cassandra][:column_index_size_in_kb] = 64
 default[:cassandra][:in_memory_compaction_limit_in_mb] = 64
@@ -86,3 +96,4 @@ default[:cassandra][:HEAP_NEWSIZE] = "800M"
 default[:cassandra][:dynamic_snitch_update_interval_in_ms] = 100
 default[:cassandra][:dynamic_snitch_reset_interval_in_ms] = 600000
 default[:cassandra][:dynamic_snitch_badness_threshold] = 0.1
+default[:cassandra][:internode_compression] = "all"
