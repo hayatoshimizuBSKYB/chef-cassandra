@@ -23,4 +23,5 @@ do
 	done
 done
 
-
+sudo s3qlctrl flushcache <%= @node[:cassandra][:backup_dir]  %>
+sudo s3qlctrl upload-meta <%= @node[:cassandra][:backup_dir]  %>

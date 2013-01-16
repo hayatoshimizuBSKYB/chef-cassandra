@@ -6,7 +6,7 @@ include_recipe "cassandra::token_generation"
 
 bash "Set ulimits" do
   code <<-EOH
-    if [ `grep "nofile 32768" /etc/security/limits.conf | wc -l` -gt 0 ]
+    if [ `grep "nofile 32768" /etc/security/limits.conf | wc -l` -lt 1 ]
     then
       echo "* soft nofile 32768" | sudo tee -a /etc/security/limits.conf
       echo "* hard nofile 32768" | sudo tee -a /etc/security/limits.conf
@@ -14,6 +14,20 @@ bash "Set ulimits" do
       echo "* hard memlock unlimited" | sudo tee -a /etc/security/limits.conf
       sync
       echo 3 > /proc/sys/vm/drop_caches
+    fi
+  EOH
+end
+
+bash "Set sudo access" do
+  code <<-EOH
+    if [ `grep "s3ql" /etc/sudoers | wc -l` -lt 1 ]
+    then
+      echo >> /etc/sudoers
+      echo "cassandra ALL=(ALL) NOPASSWD: /usr/bin/s3qlctrl" >> /etc/sudoers
+      echo "cassandra ALL=(ALL) NOPASSWD: /usr/bin/s3qllock" >> /etc/sudoers
+      echo "cassandra ALL=(ALL) NOPASSWD: /usr/bin/s3qlrm" >> /etc/sudoers
+      echo "cassandra ALL=(ALL) NOPASSWD: /usr/bin/s3qlstat" >> /etc/sudoers
+      echo "cassandra ALL=(ALL) NOPASSWD: /usr/bin/s3qlcp" >> /etc/sudoers
     fi
   EOH
 end
@@ -178,14 +192,14 @@ ruby_block "Restore from snapshots" do
           Dir.foreach("#{cassandra_backup_dir}/#{latest_date_str}") do |keyspace|
             next if (keyspace.eql?(".")) || (keyspace.eql?(".."))
             
-            Dir.foreach("#{cassandra_backup_dir}/#{latest_date_str}/#{keyspace}") do |ks_component|
+            Dir.foreach("#{cassandra_backup_dir}/#{latest_date_str}/#{keyspace}") do |column_family|
               # Remove Cassandra keyspace component directory
-              FileUtils.rm_rf "#{node[:cassandra][:data_file_directories]}/#{keyspace}/#{ks_component}"
+              FileUtils.rm_rf "#{node[:cassandra][:data_file_directories]}/#{keyspace}/#{column_family}"
               
               # Copy the snapshot directory
               FileUtils.mkdir_p "#{node[:cassandra][:data_file_directories]}/#{keyspace}"
-              FileUtils.cp_r "#{cassandra_backup_dir}/#{latest_date_str}/#{keyspace}/#{ks_component}", "#{node[:cassandra][:data_file_directories]}/#{keyspace}/#{ks_component}"
-              puts "Recovered #{keyspace}:#{ks_component} from backup."
+              FileUtils.cp_r "#{cassandra_backup_dir}/#{latest_date_str}/#{keyspace}/#{column_family}", "#{node[:cassandra][:data_file_directories]}/#{keyspace}/#{column_family}"
+              puts "Recovered #{keyspace}:#{column_family} from backup."
             end
             
           end
