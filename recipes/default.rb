@@ -192,14 +192,21 @@ ruby_block "Restore from snapshots" do
           Dir.foreach("#{cassandra_backup_dir}/#{latest_date_str}") do |keyspace|
             next if (keyspace.eql?(".")) || (keyspace.eql?(".."))
             
+            puts "Found snapshot for keyspace: #{keyspace}"
+            
             Dir.foreach("#{cassandra_backup_dir}/#{latest_date_str}/#{keyspace}") do |column_family|
+              puts "Found snapshot for column family#{keyspace}:#{column_family}"
+            
               # Remove Cassandra keyspace component directory
-              FileUtils.rm_rf "#{node[:cassandra][:data_file_directories]}/#{keyspace}/#{column_family}"
+              if Dir.exists?("#{node[:cassandra][:data_file_directories]}/#{keyspace}/#{column_family}")
+                FileUtils.rm_rf "#{node[:cassandra][:data_file_directories]}/#{keyspace}/#{column_family}"
+                puts "Removed directory: #{node[:cassandra][:data_file_directories]}/#{keyspace}/#{column_family}"
+              end
               
               # Copy the snapshot directory
               FileUtils.mkdir_p "#{node[:cassandra][:data_file_directories]}/#{keyspace}"
               FileUtils.cp_r "#{cassandra_backup_dir}/#{latest_date_str}/#{keyspace}/#{column_family}", "#{node[:cassandra][:data_file_directories]}/#{keyspace}/#{column_family}"
-              puts "Recovered #{keyspace}:#{column_family} from backup."
+              puts "Recovered #{keyspace}:#{column_family} from snapshot."
             end
             
           end
