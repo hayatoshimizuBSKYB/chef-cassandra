@@ -206,7 +206,7 @@ ruby_block "Restore from snapshots" do
               # Copy the snapshot directory
               FileUtils.mkdir_p "#{node[:cassandra][:data_file_directories]}/#{keyspace}"
               FileUtils.cp_r "#{cassandra_backup_dir}/#{latest_date_str}/#{keyspace}/#{column_family}", "#{node[:cassandra][:data_file_directories]}/#{keyspace}/#{column_family}"
-              puts "Recovered #{keyspace}:#{column_family} from snapshot."
+              puts "Recovered #{keyspace}:#{column_family} from snapshot"
             end
             
           end

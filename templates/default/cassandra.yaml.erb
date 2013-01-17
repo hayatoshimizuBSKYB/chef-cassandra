@@ -18,7 +18,7 @@ authenticator: org.apache.cassandra.auth.AllowAllAuthenticator
 
 authorizer: org.apache.cassandra.auth.AllowAllAuthorizer
 
-partitioner: org.apache.cassandra.dht.Murmur3Partitioner
+partitioner: <%= @node[:cassandra][:partitioner] %>
 
 data_file_directories:
     - <%= @node[:cassandra][:data_file_directories] %>
