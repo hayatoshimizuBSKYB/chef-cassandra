@@ -221,6 +221,11 @@ ruby_block "Restore from snapshots" do
   action :create
 end
 
+ruby_block "chmod snapshot directory" do
+  block do
+    FileUtils.chown_R "cassandra", "cassandra", node[:cassandra][:backup_dir]
+  end
+end
 
 # Start Cassandra
 service "cassandra" do
