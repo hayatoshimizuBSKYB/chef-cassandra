@@ -1,7 +1,6 @@
 # Cookbook Name:: cassandra
 include_recipe "cassandra::cloud"
 include_recipe "cassandra::create_seed_list"
-include_recipe "cassandra::token_generation"
 
 
 bash "Set ulimits" do
@@ -163,7 +162,7 @@ template "#{node[:cassandra][:install_path]}/cassandra/bin/snapshot.sh" do
    group "cassandra"
    mode "0755"
    source "snapshot.sh.erb"
-   notifies :restart , resources(:service => "cassandra")
+#   notifies :restart , resources(:service => "cassandra")
 end
 
 ruby_block "Restore from snapshots" do
