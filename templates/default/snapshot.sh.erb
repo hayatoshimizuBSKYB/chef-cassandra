@@ -2,12 +2,11 @@
 
 echo `date`: ============================================================
 echo `date`: Starting Cassandra compaction, snapshot, and backup process.
-echo
 
 CASSANDRA_BIN_DIR=<%= @node[:cassandra][:home] %>/bin
 
 todays_backup_dir=<%= @node[:s3ql][:mount_point] %>/cassandra/`date +"%Y-%m-%d"`
-echo Backup directory: $todays_backup_dir
+echo `date`: Backup directory: $todays_backup_dir
 
 mkdir -p $todays_backup_dir && echo `date`: Created backup directory
 [[ $? == 0 ]] || ( echo `date`: "Failed to created backup directory! Exiting..." && exit 1 ) 
@@ -38,7 +37,7 @@ do
 done
 
 echo `date`: Deleting snapshots older than 7 days
-find <%= @node[:s3ql][:mount_point] %>/cassandra -type d -ctime +<%= @node[:cassandra][:snapshots_retention_days] %> -maxdepth 1 -exec s3qlrm {} \;
+find <%= @node[:s3ql][:mount_point] %>/cassandra -maxdepth 1 -type d -ctime +<%= @node[:cassandra][:snapshots_retention_days] %>  -exec s3qlrm {} \;
 
 
 sudo s3qlctrl flushcache <%= @node[:cassandra][:backup_dir]  %> && echo `date`: "s3ql cache flushed."
