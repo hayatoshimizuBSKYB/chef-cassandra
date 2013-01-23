@@ -1,27 +1,49 @@
 #!/bin/bash
 
+echo `date`: ============================================================
+echo `date`: Starting Cassandra compaction, snapshot, and backup process.
+echo
+
 CASSANDRA_BIN_DIR=<%= @node[:cassandra][:home] %>/bin
 
 todays_backup_dir=<%= @node[:s3ql][:mount_point] %>/cassandra/`date +"%Y-%m-%d"`
+echo Backup directory: $todays_backup_dir
 
-mkdir -p $todays_backup_dir
+mkdir -p $todays_backup_dir && echo `date`: Created backup directory
+[[ $? == 0 ]] || ( echo `date`: "Failed to created backup directory! Exiting..." && exit 1 ) 
 
 for ks in `echo 'show keyspaces;' | ./cassandra-cli | egrep "^Keyspace:" | sed -e 's/Keyspace: //g' -e 's/://g'`
 do
-	mkdir $todays_backup_dir/$ks
+	mkdir $todays_backup_dir/$ks && echo `date`: "  Created keyspace backup directory  $todays_backup_dir/$ks"
+	[[ $? == 0 ]] || ( echo `date`: "  Failed to created keyspace directory! Exiting..." && exit 1 ) 
 	
-	`$CASSANDRA_BIN_DIR/nodetool flush $ks`
-	`$CASSANDRA_BIN_DIR/nodetool compact $ks`
-	output=`$CASSANDRA_BIN_DIR/nodetool snapshot $ks`
+	`$CASSANDRA_BIN_DIR/nodetool flush $ks` && echo `date`: "  nodetool flush completed."
+	[[ $? == 0 ]] || ( echo `date`: "  nodetool flush failed! Exiting..." && exit 1 ) 
+	
+	`$CASSANDRA_BIN_DIR/nodetool compact $ks` && echo `date`: "  nodetool compact completed."
+	[[ $? == 0 ]] || ( echo `date`: "  nodetool compact failed! Exiting..." && exit 1 ) 
+	
+	output=`$CASSANDRA_BIN_DIR/nodetool snapshot $ks` && echo `date`: "  nodetool snapshot completed."
+	[[ $? == 0 ]] || ( echo `date`: "  nodetool snapshot failed! Exiting..." && exit 1 )
+	
 	ss_dirname=`echo $output | sed -e 's/.*Snapshot directory: //g' | perl -p -e 's/\n//g'`
 	
 	ks_data_dir=<%= @node[:cassandra][:data_file_directories] %>/$ks
 	for ss_dir in `find $ks_data_dir -name $ss_dirname`
 	do
 		sub_ks_data_name=`echo $ss_dir | sed -e "s|$ks_data_dir/||g" -e 's|/snapshots.*$||g'`
-		mv $ss_dir $todays_backup_dir/$ks/$sub_ks_data_name
+		mv $ss_dir $todays_backup_dir/$ks/$sub_ks_data_name && echo `date`: "    Successfully backed up snapshots files to $todays_backup_dir/$ks/$sub_ks_data_name"
+		[[ $? == 0 ]] || ( echo `date`: "    Failed to backup snapshots files! Exiting..." && exit 1 )
 	done
 done
 
-sudo s3qlctrl flushcache <%= @node[:cassandra][:backup_dir]  %>
-sudo s3qlctrl upload-meta <%= @node[:cassandra][:backup_dir]  %>
+echo `date`: Deleting snapshots older than 7 days
+find <%= @node[:s3ql][:mount_point] %>/cassandra -type d -ctime +<%= @node[:cassandra][:snapshots_retention_days] %> -maxdepth 1 -exec s3qlrm {} \;
+
+
+sudo s3qlctrl flushcache <%= @node[:cassandra][:backup_dir]  %> && echo `date`: "s3ql cache flushed."
+sudo s3qlctrl upload-meta <%= @node[:cassandra][:backup_dir]  %> && echo `date`: "s3ql uploaded metadata."
+
+echo
+echo
+echo

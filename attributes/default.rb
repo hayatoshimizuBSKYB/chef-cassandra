@@ -10,6 +10,7 @@ default[:cassandra][:jna_version] = "3.5.1"
 
 default[:cassandra][:user] = "cassandra"
 
+default[:cassandra][:logs_directory] = "/var/lib/cassandra/logs"
 
 # Advanced Cassandra settings
 default[:cassandra][:token_position] = false
@@ -110,4 +111,5 @@ default[:cassandra][:client_encryption_options_enabled] = "false"
 default[:cassandra][:client_encryption_options_keystore] = "conf/.keystore"
 default[:cassandra][:client_encryption_options_keystore_password] = "cassandra"
 
-  
+default[:cassandra][:splay] = 600
+default[:cassandra][:snapshots_retention_days] = 7
